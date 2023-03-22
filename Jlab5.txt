@@ -1,0 +1,84 @@
+Servlet9.java
+import java.io.*;
+import javax.servlet.*;
+import javax.servlet.annotation.WebServlet;
+import javax.servlet.http.*;
+@WebServlet("/Servlet9")
+publicclass Servlet9 extends HttpServlet {
+protectedvoid doPost(HttpServletRequest request, HttpServletResponse
+
+response) throws ServletException, IOException {
+
+response.setContentType("text/html");
+
+PrintWriter out = response.getWriter();
+
+String str = request.getParameter("uname");
+
+String str1 = request.getParameter("pname");
+
+out.println("<html>");
+
+out.println("<body>");
+
+out.println("Username is :" + str + "<br/>");
+
+out.println("Password is :" + str1);
+
+out.println("</body>");
+
+out.println("</html>"); }
+
+}
+
+Under WebContent, create a new html file, Program9.html
+
+<html>
+
+<head>
+
+<title>Program 9</title>
+
+</head>
+
+<body bgcolor=orange>
+
+<form method="post" name="form1" action="http://localhost:8080/ProjectName/ServletClassName">
+
+<center>
+
+<b><br/><br/>
+
+Enter Username : <input type="text" name="uname" size="10"/>
+
+<br/>
+
+Enter Password : <input type="password" name="pname" size="10"/>
+
+<br/><br/>
+
+<input type="button" value="Submit" onclick="submit()"/>
+
+</center>
+
+<script type="text/javascript">
+
+function validate(){
+
+if(document.form1.uname.value =="" || document.from1.pname.value ==""){
+
+alert("Fields cannot be blank");
+
+return;
+
+}
+
+}
+
+</script>
+
+</form>
+
+</body>
+
+</html>
