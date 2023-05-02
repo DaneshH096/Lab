@@ -1,0 +1,135 @@
+create table student(
+USN varchar(10),
+sname varchar(50),
+address varchar(40),
+phone number(10),
+gender char,
+primary key(USN)
+);
+
+create table semsec(
+SSID varchar(5),
+sem number(1),
+sec char,
+primary key(SSID)
+);
+
+create table class(
+USN varchar(10),
+SSID varchar(5),
+primary key(USN, SSID),
+foreign key (USN) references student(USN),
+foreign key (SSID) references semsec(SSID)
+);
+
+create table subject(
+subcode varchar(6),
+title varchar(15),
+sem number(1),
+credits number(1),
+primary key(subcode)
+);
+
+create table ciemarks(
+USN varchar(10),
+subcode varchar(6),
+SSID varchar(5),
+CIE1 number(2),
+CIE2 number(2),
+CIE3 number(2),
+FinalCIE number(2),
+primary key(USN, subcode, SSID),
+foreign key(USN) references student(USN),
+foreign key(subcode) references subject(subcode),
+foreign key(SSID) references semsec(SSID)
+);
+
+insert all
+into student values ('1DA15CS001', 'Ajay', 'Banglore', 9845807018, 'M')
+into student values ('1DA15CS065', 'Ishika', 'Manglore', 9845807018, 'F')
+into student values ('1DA15CS101', 'Pradeep', 'Banglore', 9845807018, 'M')
+into student values ('1DA19CS001', 'Abhishek', 'Banglore', 9845807018, 'M')
+into student values ('1DA19CS045', 'Diskshya', 'Manglore', 9845807018, 'F')
+into student values ('1DA19CS089', 'Mina', 'Banglore', 9845807018, 'F')
+into student values ('1DA19CS133', 'Siddhartha', 'Banglore', 9845807018, 'M')
+select * from dual;
+
+insert all
+into semsec values ('CSE5A', 5, 'A')
+into semsec values ('CSE5B', 5, 'B')
+into semsec values ('CSE5C', 5, 'C')
+into semsec values ('CSE4A', 4, 'A')
+into semsec values ('CSE4B', 4, 'B')
+into semsec values ('CSE4C', 4, 'C')
+select * from dual;
+
+insert all
+into class values ('1DA15CS001', 'CSE5A')
+into class values ('1DA15CS065', 'CSE5B')
+into class values ('1DA15CS101', 'CSE5C')
+
+into class values ('1DA19CS001', 'CSE4A')
+into class values ('1DA19CS045', 'CSE4B')
+into class values ('1DA19CS089', 'CSE4C')
+into class values ('1DA19CS133', 'CSE4C')
+select * from dual;
+
+insert all
+into subject values ('18CS41','ADT', 4, 4)
+into subject values ('18CS42','MCES', 4, 4)
+into subject values ('18CS43','C++', 4, 3)
+into subject values ('18CS44','COA', 4, 3)
+
+into subject values ('18CS51','Java', 5, 4)
+into subject values ('18CS52','CNIP', 5, 4)
+into subject values ('18CS53','SE', 5, 3)
+into subject values ('18CS54','DBMS', 5, 3)
+select * from dual;
+
+
+insert all
+into ciemarks values ('1DA15CS101', '18CS51', 'CSE5C', 24, 23, 22, NULL)
+into ciemarks values ('1DA15CS101', '18CS52', 'CSE5C', 23, 21, 19,NULL)
+into ciemarks values ('1DA15CS101', '18CS53', 'CSE5C', 14, 18, 21,NULL)
+into ciemarks values ('1DA15CS101', '18CS54', 'CSE5C', 20, 22, 24,NULL)
+select * from dual;
+
+Q1)
+
+select s.*, ss.sem, ss.sec
+from student s, semsec ss, class c
+where s.USN = C.USN and ss.SSID = C.SSID
+and ss.sem = 4 and ss.sec = 'C'
+
+
+Q2)
+
+select ss.sem, ss.sec, s.gender, count(s.gender) as count
+from student s, semsec ss, class c
+where s.USN = C.USN and ss.SSID = C.SSID
+group by ss.sem, ss.sec, s.gender
+order by sem;
+
+Q3)
+
+create view stu_cie1_marks as
+select CIE1, subcode
+from ciemarks
+where USN = '1DA15CS101';
+
+Q4)
+
+update ciemarks
+set FinalCIE = ((CIE1 + CIE2 + CIE3) - LEAST(CIE1, CIE2, CIE3))/2;
+
+Q5)
+
+select s.*,
+(case
+when m.FinalCIE between 22 and 25 then 'Outstanding'
+when m.FinalCIE between 18 and 21 then 'Average'
+else 'weak'
+end) as CAT
+from student s, semsec ss, ciemarks m, subject sub
+where s.USN = m.USN and ss.SSID = m.SSID and
+sub.subcode = m.subcode and sub.sem = 5;
